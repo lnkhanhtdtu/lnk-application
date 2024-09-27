@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lnk.DataAccess", "Lnk.DataA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lnk.Infrastructure", "Lnk.Infrastructure\Lnk.Infrastructure.csproj", "{827B6F13-4589-4FD4-A95B-028338199655}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lnk.UI", "Lnk.UI\Lnk.UI.csproj", "{52CBAE1D-36F8-4951-B97E-422C16272082}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lnk.UI", "Lnk.UI\Lnk.UI.csproj", "{52CBAE1D-36F8-4951-B97E-422C16272082}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

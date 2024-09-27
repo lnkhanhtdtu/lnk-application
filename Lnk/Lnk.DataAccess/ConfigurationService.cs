@@ -1,5 +1,6 @@
 ﻿using Lnk.DataAccess.DataAccess;
 using Lnk.Domain.Entities;
+using Lnk.Application.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -62,7 +63,7 @@ namespace Lnk.DataAccess
 	        //services.AddTransient<IGerneRepository, GerneRepository>();
 	        //services.AddTransient<IUnitOfWork, GerneRepository>();
 
-	        //services.AddTransient<IGerneService, GerneService>();
+	        services.AddTransient<IUserServices, UserServices>();
 		}
     }
 }

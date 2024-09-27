@@ -4,7 +4,7 @@ using Lnk.DataAccess.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.RegisterDb(builder.Configuration);
+builder.Services.ConfigureIdentity(builder.Configuration);
 builder.Services.AddDependencyInjection();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -36,10 +36,6 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(
@@ -47,6 +43,10 @@ app.UseEndpoints(endpoints =>
         pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
     );
 });
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 
