@@ -1,11 +1,10 @@
 ﻿using Lnk.Application.DTOs;
 
-namespace Lnk.Application.Services
+namespace Lnk.Application.Abstracts
 {
     public interface IUserServices
     {
-        Task<ResponseModel> CheckLogin(string username, string password, bool rememberMe);
-
         Task<ResponseDatatable<UserModel>> GetUserPagination(RequestDataTable request);
+        Task<ResponseModel> CreateUser(AccountDTO model);
     }
 }

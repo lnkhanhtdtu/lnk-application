@@ -4,6 +4,8 @@ namespace Lnk.Application.DTOs;
 
 public class AccountDTO
 {
+    public string? Id { get; set; }
+
     public string RoleName { get; set; }
 
     public string Username { get; set; }
@@ -16,11 +18,10 @@ public class AccountDTO
 
     public string Phone { get; set; }
 
-    public string MobilePhone { get; set; }
 
     public string Address { get; set; }
 
     public bool IsActive { get; set; }
 
-    public Microsoft.AspNetCore.Http.IFormFile Avatar { get; set; }
+    public Microsoft.AspNetCore.Http.IFormFile? Avatar { get; set; }
 }

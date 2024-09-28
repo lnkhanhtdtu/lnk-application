@@ -1,3 +1,4 @@
+using Lnk.Application.Abstracts;
 using Lnk.UI.Areas.Admin.Models;
 using Microsoft.AspNetCore.Mvc;
 using Lnk.Application.Services;
@@ -9,12 +10,12 @@ namespace Lnk.UI.Areas.Admin.Controllers
     [Area("Admin")]
     public class AuthenticationController : Controller
     {
-        private readonly IUserServices _userServices;
+        private readonly IAuthenticationService _authenticationService;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AuthenticationController(IUserServices userServices, SignInManager<ApplicationUser> signInManager)
+        public AuthenticationController(IAuthenticationService authenticationService, SignInManager<ApplicationUser> signInManager)
         {
-            _userServices = userServices;
+            _authenticationService = authenticationService;
             _signInManager = signInManager;
         }
         // GET: AuthenticationController
@@ -35,7 +36,7 @@ namespace Lnk.UI.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _userServices.CheckLogin(model.Username, model.Password, model.RememberMe);
+                var result = await _authenticationService.CheckLogin(model.Username, model.Password, model.RememberMe);
                 if (result.Status)
                 {
                     return RedirectToAction("Index", "HomeAdmin");

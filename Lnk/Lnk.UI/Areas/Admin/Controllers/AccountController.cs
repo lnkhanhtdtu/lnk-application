@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Lnk.Application.Abstracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Lnk.Application.DTOs;
 using Lnk.Application.Services;
@@ -9,10 +10,12 @@ namespace Lnk.UI.Areas.Admin.Controllers
     public class AccountController : Controller
     {
         private readonly IUserServices _userServices;
+        private readonly IRoleService _roleService;
 
-        public AccountController(IUserServices userServices)
+        public AccountController(IUserServices userServices, IRoleService roleService)
         {
             _userServices = userServices;
+            _roleService = roleService;
         }
 
         public IActionResult Index()
@@ -28,15 +31,36 @@ namespace Lnk.UI.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var role = await _roleService.GetRoleForDropdownList();
+            ViewBag.Role = role;
+
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(AccountDTO account)
+        public async Task<IActionResult> Create(AccountDTO account)
         {
+            var role = await _roleService.GetRoleForDropdownList();
+            ViewBag.Role = role;
+
+            if (ModelState.IsValid)
+            {
+                var response = await _userServices.CreateUser(account);
+                if (response.Status)
+                {
+                    return RedirectToAction("Index", "Account");
+                }
+
+                ModelState.AddModelError("errorModel", response.Message);
+            }
+            else
+            {
+                ModelState.AddModelError("errorModel", "Có lỗi xảy ra");
+            }
+
             return View(account);
         }
 

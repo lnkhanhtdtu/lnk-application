@@ -1,4 +1,5 @@
-﻿using Lnk.DataAccess.DataAccess;
+﻿using Lnk.Application.Abstracts;
+using Lnk.DataAccess.DataAccess;
 using Lnk.Domain.Entities;
 using Lnk.Application.Services;
 using Microsoft.AspNetCore.Builder;
@@ -59,11 +60,10 @@ namespace Lnk.DataAccess
         public static void AddDependencyInjection(this IServiceCollection services)
 
         {
-	        services.AddTransient<PasswordHasher<ApplicationUser>>();
-	        //services.AddTransient<IGerneRepository, GerneRepository>();
-	        //services.AddTransient<IUnitOfWork, GerneRepository>();
-
-	        services.AddTransient<IUserServices, UserServices>();
-		}
+            services.AddTransient<PasswordHasher<ApplicationUser>>();
+            services.AddTransient<IUserServices, UserServices>();
+            services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<IAuthenticationService, AuthenticationService>();
+        }
     }
 }

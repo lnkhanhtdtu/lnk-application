@@ -35,12 +35,10 @@
                     <div class="row mt-1 g-5">
                         <div class="col-md-12">
                             <div class="form-floating form-floating-outline">
-                                <select asp-for="RoleName" class="select2 form-select">
-                                    <option value="">Vui lòng chọn quyền</option>
-                                    <option value="SuperAdmin">Quản trị viên cao cấp</option>
-                                    <option value="Admin">Quản trị viên</option>
-                                    <option value="User">Người dùng</option>
-                                </select>
+                                @Html.DropDownListFor(model => model.RoleName,
+                                         (IEnumerable<SelectListItem>)ViewBag.Role,
+                                         "Vui lòng chọn quyền",
+                                         new { @class = "select2 form-select" })
                                 <label for="RoleName">Quyền</label>
                             </div>
                         </div>
