@@ -59,7 +59,7 @@
     <script>
         const elementName = "#myTable";
         const url = '@Url.Action("GetAccountPagination", "Account")';
-        const editUrl = '@Url.Action("Edit", "Account", new { area = "Admin" })';
+        const editUrl = '@Url.Action("Create", "Account", new { area = "Admin" })';
         const deleteUrl = '@Url.Action("Delete", "Account", new { area = "Admin" })';
         const columns = [
             { data: "username", name: "username", autoWidth: true },

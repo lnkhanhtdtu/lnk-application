@@ -100,5 +100,19 @@ namespace Lnk.Application.Services
                 Message = $"{(string.IsNullOrEmpty(model.Id) ? "Tạo tài khoản thất bại" : "Cập nhật tài khoản thất bại")} {errors}"
             };
         }
+
+        public async Task<AccountDTO> GetUserById(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            return new AccountDTO
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Fullname = user.FullName,
+                Email = user.Email,
+                Phone = user.PhoneNumber,
+                IsActive = user.IsActive
+            };
+        }
     }
 }

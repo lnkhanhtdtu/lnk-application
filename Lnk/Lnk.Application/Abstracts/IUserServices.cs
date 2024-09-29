@@ -6,5 +6,6 @@ namespace Lnk.Application.Abstracts
     {
         Task<ResponseDatatable<UserModel>> GetUserPagination(RequestDataTable request);
         Task<ResponseModel> CreateUser(AccountDTO model);
+        Task<AccountDTO> GetUserById(string id);
     }
 }

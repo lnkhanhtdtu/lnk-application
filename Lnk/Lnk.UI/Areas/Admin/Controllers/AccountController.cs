@@ -31,10 +31,16 @@ namespace Lnk.UI.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(string? id)
         {
             var role = await _roleService.GetRoleForDropdownList();
             ViewBag.Role = role;
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                var response = await _userServices.GetUserById(id);
+                return View(response);
+            }
 
             return View();
         }
