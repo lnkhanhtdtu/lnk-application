@@ -3,6 +3,7 @@ using Lnk.Domain.Entities;
 using Lnk.Application.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 using Lnk.Domain.Enums;
 
 namespace Lnk.Application.Services
@@ -10,10 +11,12 @@ namespace Lnk.Application.Services
     public class UserServices : IUserServices
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public UserServices(UserManager<ApplicationUser> userManager)
+        public UserServices(UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         public async Task<ResponseDatatable<UserModel>> GetUserPagination(RequestDataTable request)
@@ -104,15 +107,7 @@ namespace Lnk.Application.Services
         public async Task<AccountDTO> GetUserById(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            return new AccountDTO
-            {
-                Id = user.Id,
-                Username = user.UserName,
-                Fullname = user.FullName,
-                Email = user.Email,
-                Phone = user.PhoneNumber,
-                IsActive = user.IsActive
-            };
+            return _mapper.Map<AccountDTO>(user);
         }
     }
 }

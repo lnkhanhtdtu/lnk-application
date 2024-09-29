@@ -40,31 +40,43 @@
                                          "Vui lòng chọn quyền",
                                          new { @class = "select2 form-select" })
                                 <label for="RoleName">Quyền</label>
+                                <span asp-validation-for="RoleName" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-floating form-floating-outline">
-                                <input class="form-control" type="text" asp-for="Username" autofocus />
+                                @if (string.IsNullOrEmpty(Model.Id))
+                                {
+                                    <input class="form-control" type="text" asp-for="Username" autofocus />
+                                }
+                                else
+                                {
+                                    <input class="form-control" type="text" asp-for="Username" readonly />
+                                }
                                 <label for="firstName">Tên đăng nhập</label>
+                                <span asp-validation-for="Username" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating form-floating-outline">
                                 <input class="form-control" type="text" asp-for="Password" />
                                 <label for="lastName">Mật khẩu</label>
+                                <span asp-validation-for="Password" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating form-floating-outline">
                                 <input class="form-control" type="text" asp-for="Fullname" placeholder="Họ và tên" />
                                 <label for="email">Họ và tên</label>
+                                <span asp-validation-for="Fullname" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating form-floating-outline">
                                 <input type="text" class="form-control" asp-for="Email" placeholder="Email" />
                                 <label for="organization">Email</label>
+                                <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -73,6 +85,7 @@
                                     <input type="text" asp-for="Phone" class="form-control"
                                         placeholder="202 555 0111" />
                                     <label for="phoneNumber">Số điện thoại</label>
+                                    <span asp-validation-for="Phone" class="text-danger"></span>
                                 </div>
                                 <span class="input-group-text">VN (+84)</span>
                             </div>
@@ -81,6 +94,7 @@
                             <div class="form-floating form-floating-outline">
                                 <input type="text" class="form-control" asp-for="Address" placeholder="Address" />
                                 <label for="address">Địa chỉ</label>
+                                <span asp-validation-for="Address" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -88,6 +102,7 @@
                                 <input class="form-check-input" type="checkbox" asp-for="IsActive" id="isActive" />
                                 <label class="form-check-label" for="isActive">Active</label>
                             </div>
+                            <span asp-validation-for="IsActive" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="mt-6">

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using AutoMapper;
 
 namespace Lnk.DataAccess
 {
@@ -64,6 +65,11 @@ namespace Lnk.DataAccess
             services.AddTransient<IUserServices, UserServices>();
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IAuthenticationService, AuthenticationService>();
+        }
+
+        public static void AddAutoMapper(this IServiceCollection services)
+        {
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
     }
 }

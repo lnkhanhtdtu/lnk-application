@@ -33,16 +33,14 @@ namespace Lnk.UI.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Create(string? id)
         {
+            var accountDTO = string.IsNullOrEmpty(id) 
+            ? new AccountDTO() 
+            : await _userServices.GetUserById(id);
+
             var role = await _roleService.GetRoleForDropdownList();
             ViewBag.Role = role;
 
-            if (!string.IsNullOrEmpty(id))
-            {
-                var response = await _userServices.GetUserById(id);
-                return View(response);
-            }
-
-            return View();
+            return View(accountDTO);
         }
 
         [HttpPost]
