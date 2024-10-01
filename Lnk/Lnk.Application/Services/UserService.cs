@@ -1,22 +1,25 @@
-﻿using Lnk.Application.Abstracts;
+﻿using AutoMapper;
+using Lnk.Application.Abstracts;
 using Lnk.Domain.Entities;
 using Lnk.Application.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
 using Lnk.Domain.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace Lnk.Application.Services
 {
-    public class UserServices : IUserServices
+    public class UserService : IUserService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly IImageService _imageService;
 
-        public UserServices(UserManager<ApplicationUser> userManager, IMapper mapper)
+        public UserService(UserManager<ApplicationUser> userManager, IMapper mapper, IImageService imageService)
         {
             _userManager = userManager;
             _mapper = mapper;
+            _imageService = imageService;
         }
 
         public async Task<ResponseDatatable<UserModel>> GetUserPagination(RequestDataTable request)
@@ -49,27 +52,31 @@ namespace Lnk.Application.Services
             };
         }
 
-        public async Task<ResponseModel> CreateUser(AccountDTO model)
+        public async Task<ResponseModel> Save(AccountDTO model)
         {
             string errors = string.Empty;
-
-            var user = new ApplicationUser
-            {
-                FullName = model.Fullname,
-                UserName = model.Username,
-                IsActive = model.IsActive,
-                Email = model.Email,
-                PhoneNumber = model.Phone
-                // Address = model.Address
-            };
+            IdentityResult identityResult;
 
             if (string.IsNullOrEmpty(model.Id))
             {
-                var identityResult = await _userManager.CreateAsync(user, model.Password);
+                var user = new ApplicationUser
+                {
+                    FullName = model.Fullname,
+                    UserName = model.Username,
+                    IsActive = model.IsActive,
+                    Email = model.Email,
+                    PhoneNumber = model.Phone
+                    // Address = model.Address
+                };
+
+                identityResult = await _userManager.CreateAsync(user, model.Password);
 
                 if (identityResult.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, model.RoleName);
+
+                    await _imageService.SaveImage(new List<IFormFile>() { model.Avatar }, "images/user",
+                        $"{user.Id}.png");
 
                     return new ResponseModel
                     {
@@ -78,23 +85,48 @@ namespace Lnk.Application.Services
                         Action = ActionType.Insert
                     };
                 }
-
-                errors = string.Join("<br />", identityResult.Errors.Select(e => e.Description));
             }
             else
             {
-                var identityResult = await _userManager.UpdateAsync(user);
+                var user = await _userManager.FindByIdAsync(model.Id);
+
+                user.FullName = model.Fullname;
+                user.Email = model.Email;
+                // user.MobilePhone = model.MobilePhone;
+                user.PhoneNumber = model.Phone;
+                // user.Address = model.Address;
+                user.IsActive = model.IsActive;
+
+                identityResult = await _userManager.UpdateAsync(user);
+
                 if (identityResult.Succeeded)
                 {
+                    await _imageService.SaveImage(new List<IFormFile>() { model.Avatar }, "images/user", $"{user.Id}.png");
+
+                    var hasRole = await _userManager.IsInRoleAsync(user, model.RoleName);
+
+                    if (!hasRole)
+                    {
+                        var oldRoleName = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+
+                        var removeResult = await _userManager.RemoveFromRoleAsync(user, oldRoleName);
+
+                        if (removeResult.Succeeded)
+                        {
+                            await _userManager.AddToRoleAsync(user, model.RoleName);
+                        }
+                    }
+
                     return new ResponseModel
                     {
                         Status = true,
-                        Message = "Cập nhật tài khoản thành công",
+                        Message = "Cập nhật thành công.",
                         Action = ActionType.Update
                     };
                 }
-                errors = string.Join("<br />", identityResult.Errors.Select(e => e.Description));
             }
+
+            errors = string.Join("<br />", identityResult.Errors.Select(e => e.Description));
 
             return new ResponseModel
             {

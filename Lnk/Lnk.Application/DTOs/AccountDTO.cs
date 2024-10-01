@@ -1,4 +1,4 @@
-using System;
+using Microsoft.AspNetCore.Http;
 
 namespace Lnk.Application.DTOs;
 
@@ -17,11 +17,10 @@ public class AccountDTO
     public string Email { get; set; }
 
     public string Phone { get; set; }
-
-
+    
     public string Address { get; set; }
 
     public bool IsActive { get; set; }
 
-    public Microsoft.AspNetCore.Http.IFormFile? Avatar { get; set; }
+    public IFormFile? Avatar { get; set; }
 }

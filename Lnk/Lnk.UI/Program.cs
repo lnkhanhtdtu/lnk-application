@@ -1,5 +1,5 @@
-using Lnk.DataAccess;
 using Lnk.DataAccess.Configuration;
+using Lnk.Infrastructure.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 

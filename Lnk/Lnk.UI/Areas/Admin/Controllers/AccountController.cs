@@ -1,20 +1,18 @@
 ﻿using Lnk.Application.Abstracts;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Lnk.Application.DTOs;
-using Lnk.Application.Services;
+using Microsoft.AspNetCore.Mvc;
 namespace Lnk.UI.Areas.Admin.Controllers
 {
     [Area("Admin")]
     // [Authorize]
     public class AccountController : Controller
     {
-        private readonly IUserServices _userServices;
+        private readonly IUserService _userService;
         private readonly IRoleService _roleService;
 
-        public AccountController(IUserServices userServices, IRoleService roleService)
+        public AccountController(IUserService userService, IRoleService roleService)
         {
-            _userServices = userServices;
+            _userService = userService;
             _roleService = roleService;
         }
 
@@ -26,51 +24,44 @@ namespace Lnk.UI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> GetAccountPagination(RequestDataTable request)
         {
-            var response = await _userServices.GetUserPagination(request);
+            var response = await _userService.GetUserPagination(request);
             return Json(response);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create(string? id)
+        public async Task<IActionResult> SaveData(string? id)
         {
-            var accountDTO = string.IsNullOrEmpty(id) 
-            ? new AccountDTO() 
-            : await _userServices.GetUserById(id);
+            var accountDTO = string.IsNullOrEmpty(id) ? new AccountDTO() : await _userService.GetUserById(id);
 
             var role = await _roleService.GetRoleForDropdownList();
-            ViewBag.Role = role;
+            ViewBag.Roles = role;
 
             return View(accountDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AccountDTO account)
+        public async Task<IActionResult> SaveData(AccountDTO accountDTO)
         {
-            var role = await _roleService.GetRoleForDropdownList();
-            ViewBag.Role = role;
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var response = await _userServices.CreateUser(account);
-                if (response.Status)
-                {
-                    return RedirectToAction("Index", "Account");
-                }
+                ViewBag.Roles = await _roleService.GetRoleForDropdownList();
+                ModelState.AddModelError("errorsModel", "Invalid model");
 
-                ModelState.AddModelError("errorModel", response.Message);
-            }
-            else
-            {
-                ModelState.AddModelError("errorModel", "Có lỗi xảy ra");
+                return View(accountDTO);
             }
 
-            return View(account);
-        }
+            var result = await _userService.Save(accountDTO);
 
-        public IActionResult Edit()
-        {
-            return Ok("Sửa");
+            if (result.Status)
+            {
+                return RedirectToAction("Index", "Account");
+            }
+
+            ModelState.AddModelError("errorsModel", result.Message);
+            ViewBag.Roles = await _roleService.GetRoleForDropdownList();
+
+            return View(accountDTO);
         }
 
         public IActionResult Delete()

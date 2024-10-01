@@ -8,35 +8,39 @@
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-6">
-            <!-- Account -->
-            <div class="card-body">
-                <div class="d-flex align-items-start align-items-sm-center gap-6">
-                    <img src="~/admin/assets/img/avatars/1.png" alt="user-avatar"
-                        class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar" />
-                    <div class="button-wrapper">
-                        <label for="upload" class="btn btn-sm btn-primary me-3 mb-4" tabindex="0">
-                            <span class="d-none d-sm-block">Upload new photo</span>
-                            <i class="ri-upload-2-line d-block d-sm-none"></i>
-                            <input type="file" asp-for="Avatar" class="account-file-input" hidden
-                                accept="image/png, image/jpeg" />
-                            @* id="upload" *@
-                        </label>
-                        <button type="button" class="btn btn-sm btn-outline-danger account-image-reset mb-4">
-                            <i class="ri-refresh-line d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">Reset</span>
-                        </button>
 
-                        <div>Allowed JPG, GIF or PNG. Max size of 800K</div>
+            <!-- Account -->
+            <form id="formAccountSettings" method="POST" asp-controller="Account" asp-action="SaveData" enctype="multipart/form-data">
+                <div class="card-body">
+                    <div class="d-flex align-items-start align-items-sm-center gap-6">
+                        @{
+                            var src = $"/images/user/{Model.Id}.png";
+                        }
+                        <img src="@src" alt="user-avatar"
+                             class="d-block w-px-100 h-px-100 rounded object-fit-cover" id="uploadedAvatar"
+                             onerror="console.log('Image load error'); this.onerror=null; this.src='/admin/assets/img/avatars/1.png';" />
+                        <div class="button-wrapper">
+                            <label class="btn btn-sm btn-primary me-3 mb-4" tabindex="0">
+                                <span class="d-none d-sm-block">Upload new photo</span>
+                                <i class="ri-upload-2-line d-block d-sm-none"></i>
+                                <!-- Sử dụng ID "avatarInput" thay vì "Avatar" -->
+                                <input type="file" id="avatarInput" asp-for="Avatar" class="account-file-input" hidden accept="image/png, image/jpeg" />
+                            </label>
+                            <button type="button" id="resetButton" class="btn btn-sm btn-outline-danger account-image-reset mb-4">
+                                <i class="ri-refresh-line d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">Reset</span>
+                            </button>
+                            <div>Allowed JPG, GIF or PNG. Max size of 800K</div>
+                        </div>
+
                     </div>
                 </div>
-            </div>
-            <div class="card-body pt-0">
-                <form id="formAccountSettings" method="POST" asp-controller="Account" asp-action="Create">
+                <div class="card-body pt-0">
                     <div class="row mt-1 g-5">
                         <div class="col-md-12">
                             <div class="form-floating form-floating-outline">
                                 @Html.DropDownListFor(model => model.RoleName,
-                                         (IEnumerable<SelectListItem>)ViewBag.Role,
+                                         (IEnumerable<SelectListItem>)ViewBag.Roles,
                                          "Vui lòng chọn quyền",
                                          new { @class = "select2 form-select" })
                                 <label for="RoleName">Quyền</label>
@@ -83,7 +87,7 @@
                             <div class="input-group input-group-merge">
                                 <div class="form-floating form-floating-outline">
                                     <input type="text" asp-for="Phone" class="form-control"
-                                        placeholder="202 555 0111" />
+                                           placeholder="202 555 0111" />
                                     <label for="phoneNumber">Số điện thoại</label>
                                     <span asp-validation-for="Phone" class="text-danger"></span>
                                 </div>
@@ -109,8 +113,9 @@
                         <button type="submit" class="btn btn-primary me-3">Save changes</button>
                         <button type="reset" class="btn btn-outline-secondary">Reset</button>
                     </div>
-                </form>
-            </div>
+
+                </div>
+            </form>
             <!-- /Account -->
         </div>
         <div class="card">
@@ -131,3 +136,36 @@
         </div>
     </div>
 </div>
+@section Scripts
+{
+<script>
+        $(document).ready(function () {
+            // Lưu URL ảnh ban đầu
+            var defaultAvatar = $('#uploadedAvatar').attr('src');
+            console.log('Avatar default src:', defaultAvatar);  // Kiểm tra URL ảnh ban đầu
+
+            // Hiển thị ảnh sau khi chọn
+            $('#avatarInput').change(function (event) {
+                console.log('File selected');  // Kiểm tra sự kiện change
+
+                var input = event.target;
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#uploadedAvatar').attr('src', e.target.result);
+                        console.log('New image src:', e.target.result);  // Kiểm tra URL ảnh mới
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            });
+
+            // Đặt lại ảnh về ảnh ban đầu
+            $('#resetButton').click(function () {
+                console.log('Resetting image');  // Kiểm tra sự kiện reset
+                $('#uploadedAvatar').attr('src', defaultAvatar);
+                $('#avatarInput').val(''); // Reset input file
+            });
+        });
+
+</script>
+}

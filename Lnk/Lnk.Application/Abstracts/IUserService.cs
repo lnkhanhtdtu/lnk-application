@@ -2,10 +2,10 @@
 
 namespace Lnk.Application.Abstracts
 {
-    public interface IUserServices
+    public interface IUserService
     {
         Task<ResponseDatatable<UserModel>> GetUserPagination(RequestDataTable request);
-        Task<ResponseModel> CreateUser(AccountDTO model);
+        Task<ResponseModel> Save(AccountDTO model);
         Task<AccountDTO> GetUserById(string id);
     }
 }

@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
+using Lnk.Application.Configuration;
 
-namespace Lnk.DataAccess
+namespace Lnk.Infrastructure.Configuration
 {
     public static class ConfigurationService
     {
@@ -59,12 +60,12 @@ namespace Lnk.DataAccess
         }
 
         public static void AddDependencyInjection(this IServiceCollection services)
-
         {
             services.AddTransient<PasswordHasher<ApplicationUser>>();
-            services.AddTransient<IUserServices, UserServices>();
+            services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddTransient<IImageService, ImageService>();
         }
 
         public static void AddAutoMapper(this IServiceCollection services)
